@@ -5,11 +5,19 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import LoginPage from './pages/login/login';
 import GroupsPage from './pages/groups/groups';
+import ChecklistPage from './pages/checklist/checklist';
 
 const stack = createStackNavigator({
   Login: {
     screen: LoginPage,
     path: 'login/',
+    navigationOptions: {
+      header: null
+    }
+  },
+  Checklist: {
+    screen: ChecklistPage,
+    path: 'checklist/',
     navigationOptions: {
       header: null
     }

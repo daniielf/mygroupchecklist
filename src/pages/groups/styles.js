@@ -23,7 +23,10 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: 'center'
   },
-
+  menuBox: {
+    width: 100,
+    height: 80
+  },
   backButton: {
     flex: 1,
     justifyContent: 'center',
