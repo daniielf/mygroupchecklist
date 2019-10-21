@@ -18,14 +18,15 @@ const stack = createStackNavigator({
     screen: GroupsPage,
     path: 'groupslist/',
     navigationOptions: {
-      title: 'My Groups',
-      headerTintColor: '#FFF',
-      headerStyle: { backgroundColor: '#D98740' },
-      headerRight: (
-        <TouchableOpacity onPress={GroupsPage.handleSubmitButtonPressd}>
-          <Text style={{color: '#FFF', marginRight: 10}} >Menu</Text>
-        </TouchableOpacity>
-      )
+      header: null
+      // title: 'My Groups',
+      // headerTintColor: '#FFF',
+      // headerStyle: { backgroundColor: '#D98740' },
+      // headerRight: (
+      //   <TouchableOpacity onPress={GroupsPage.handleSubmitButtonPressd}>
+      //     <Text style={{color: '#FFF', marginRight: 10}} >Menu</Text>
+      //   </TouchableOpacity>
+      // )
     }
   }
 }, {
