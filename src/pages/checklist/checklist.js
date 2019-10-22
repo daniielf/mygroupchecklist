@@ -1,32 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Alert,  AlertButton,SafeAreaView, View, Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native';
+import { Alert,  Button, SafeAreaView, View, Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native';
 import styles from './styles';
 import DialogInput from 'react-native-dialog-input';
+import firestore from '@react-native-firebase/firestore';
 
 export default function ChecklistPage({ navigation }) {
   const [taskList, setTaskList] = useState([]);
-  const [title, setTitle] = useState('');
-  const [group, setGroup] = useState({});
+  const [title, setTitle] = useState(navigation.getParam('group').name);
+  const [group, setGroup] = useState(navigation.getParam('group'));
   const [changingTask, setChangingTask] = useState(null);
   const [isEditing, toggleEditing] = useState(false);
-  
+  const [groupCollection, setGroupCollection] = useState(firestore().collection('groups'));
+
   useEffect(() => {
-    setTaskList([
-      { name: 'Task 1', id: 1},
-      { name: 'Task 2', id: 2},
-      { name: 'Task 3', id: 3},
-      { name: 'Task 4', id: 4},
-      { name: 'Task 5', id: 5},
-      { name: 'Task 6', id: 6},
-      { name: 'Task 7', id: 7}
-    ]);
-    let currentGroup = navigation.getParam('group');
-    if (currentGroup) {
-      setGroup(currentGroup);
-      setTitle(currentGroup.name);
-    } else {
-      navigation.pop();
-    }
+    console.log('Nav Group', navigation.getParam('group'));
+    setTaskList( group.tasks ? group.tasks : []);
   }, []);
 
   function startEdting(task) {
@@ -61,6 +49,21 @@ export default function ChecklistPage({ navigation }) {
     setTaskList(taskList.filter((elem) => elem.id !== task.id));
   }
 
+  function addNewTask(taskName) {
+    const newTask = { id: group.id + Date.now(), name: taskName };
+    group.tasks ? group.tasks.push(newTask) : group.tasks = [newTask];
+    let groupRef = {};
+    Object.assign(groupRef, group)
+    delete groupRef['id'];
+    console.log('GRUPO THEN', groupRef);
+    groupCollection.doc(group.id).set(groupRef).then((doc) => {
+      console.log('Doc Updt Sucess', doc);
+    }).catch((err) => {
+      console.log('Doc Update Err', err);
+    });
+    setTaskList(group.tasks);
+  }
+
   return(
     <> 
       <View style={styles.header}>
@@ -78,6 +81,9 @@ export default function ChecklistPage({ navigation }) {
         </TouchableOpacity>
       </View>
       <SafeAreaView>
+        <Button title="add" onPress={() => {
+          addNewTask('MyNewTask');
+        }}></Button>
         <ScrollView>
           { taskList.length > 0 && taskList.map((task) => {
             return (

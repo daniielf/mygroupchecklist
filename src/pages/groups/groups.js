@@ -28,6 +28,23 @@ import styles from './styles';
     });
   }
 
+  function joinNewGroup(groupID) {
+    firestore().collection('groups').doc(groupID).get().then((doc) => {
+      if (doc.exists) {
+        let docRef = doc.data();
+        docRef.users.push(userEmail);
+        firestore().collection('groups').doc(groupID).update(docRef).then(() => {
+          refreshGroups();
+        }).catch((err) => {
+          console.log('update failed');
+        });
+      }
+      toggleJoinGroupDialog(false);
+    }).catch(() => {
+      toggleJoinGroupDialog(false);
+    })
+  }
+
   function refreshGroups() {
     let groups = [];
       firestore().collection('groups').where('users', 'array-contains', String(userEmail))
@@ -85,7 +102,7 @@ import styles from './styles';
         <DialogInput
           isDialogVisible={joinGroupDialog}
           closeDialog={()=>{toggleJoinGroupDialog(false)}}
-          submitInput={(inputText) => { toggleJoinGroupDialog(false); console.log('JOIN', inputText)} }
+          submitInput={(inputText) => {joinNewGroup(inputText)} }
           hintInput={"Group ID"}
           title={"Join Group"}>
         </DialogInput>
