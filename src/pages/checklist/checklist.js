@@ -78,21 +78,21 @@ export default function ChecklistPage({ navigation }) {
         </TouchableOpacity>
       </View>
       <SafeAreaView>
-        { taskList.length > 0 && taskList.map((task) => {
-          return (
-            <ScrollView>
-              <View style={styles.taskItem}>
-                <Text style={styles.taskItemText}>{task.name}</Text>
-                <TouchableOpacity style={styles.editButton} onPress={() => {startEdting(task)}}>
-                  <Text style={styles.buttonText}>EDIT</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.finishButton} onPress={() => {confirmFinishTask(task)}}>
-                  <Text style={styles.buttonText}>DONE</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          )
-        })}
+        <ScrollView>
+          { taskList.length > 0 && taskList.map((task) => {
+            return (
+                <View style={styles.taskItem} key={task.id}>
+                  <Text style={styles.taskItemText}>{task.name}</Text>
+                  <TouchableOpacity style={styles.editButton} onPress={() => {startEdting(task)}}>
+                    <Text style={styles.buttonText}>EDIT</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.finishButton} onPress={() => {confirmFinishTask(task)}}>
+                    <Text style={styles.buttonText}>DONE</Text>
+                  </TouchableOpacity>
+                </View>
+            )
+          })}
+        </ScrollView>
         <DialogInput
           isDialogVisible={isEditing}
           closeDialog={()=>{toggleEditing(false)}}

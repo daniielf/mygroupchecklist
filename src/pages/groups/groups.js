@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { SafeAreaView, View, Text, Modal,TouchableOpacity, ScrollView } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import firestore from '@react-native-firebase/firestore';
@@ -9,11 +9,12 @@ import styles from './styles';
   const [newGroupDialog, toggleNewGroupDialog] = useState(false);
   const [joinGroupDialog, toggleJoinGroupDialog] = useState(false);
   const [groupList, setGroupList] = useState([]);
+  const [userEmail, setUserEmail] = useState(navigation.getParam('email'));
+
 
   useEffect(() => {
-    firestore().collection('groups').onSnapshot((snap) => {
-      console.log('Docs', snap.docs);
-    });
+    setGroupList([]);
+    refreshGroups();
   }, []);
 
   function handleNewGroupButtonPressed() {
@@ -21,10 +22,25 @@ import styles from './styles';
   }
 
   function insertNewGroup(group) {
-    let newGroupList = groupList;
-    newGroupList.push({name: group, id: groupList.length });
-    setGroupList(newGroupList);
-    toggleNewGroupDialog(false);
+    const newGroup = {name: group, adm: userEmail, users: [userEmail] };
+    firestore().collection('groups').add(newGroup).then(() => {
+      // toggleNewGroupDialog(false);
+    });
+  }
+
+  function refreshGroups() {
+    let groups = [];
+      firestore().collection('groups').where('users', 'array-contains', String(userEmail))
+      .onSnapshot((snapshot) => {
+        groups = [];
+        snapshot.forEach((doc) => {
+          if (doc) {
+            groups.push({ id: doc.id , ...doc.data()});
+          }
+        });
+        toggleNewGroupDialog(false);
+        setGroupList(groups);
+      });
   }
 
   return(
