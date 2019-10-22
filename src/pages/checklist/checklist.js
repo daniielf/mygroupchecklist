@@ -31,7 +31,9 @@ export default function ChecklistPage({ navigation }) {
 
   function startEdting(task) {
     setChangingTask(task);
-    toggleEditing(true);
+    setTimeout(() => {
+      toggleEditing(true);
+    }, 300);
   }
 
   function copyGroupIdToClipboard() {
@@ -53,7 +55,6 @@ export default function ChecklistPage({ navigation }) {
       { text: 'Cancel', style: 'cancel' },
       { text: 'Confirm', style: 'destructive', onPress: () => {finishTask(task)}}
     ]);
-
   }
 
   function finishTask(task) {

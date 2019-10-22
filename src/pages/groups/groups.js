@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Modal,TouchableOpacity, ScrollView } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
+import firestore from '@react-native-firebase/firestore';
 
 import styles from './styles';
 
@@ -10,6 +11,9 @@ import styles from './styles';
   const [groupList, setGroupList] = useState([]);
 
   useEffect(() => {
+    firestore().collection('groups').onSnapshot((snap) => {
+      console.log('Docs', snap.docs);
+    });
   }, []);
 
   function handleNewGroupButtonPressed() {
