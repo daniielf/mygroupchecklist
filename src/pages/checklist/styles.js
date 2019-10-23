@@ -90,5 +90,29 @@ export default Styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 3
+  },
+
+  blankBottomSpacing: {
+    height: 50,
+    width: '100%'
+  },
+
+  floatButtonArea: {
+    position: 'absolute',
+    alignContent: 'flex-end',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    width: '100%',
+    bottom: 10,
+    right: 10
+  },
+
+  addItemButton: {
+    backgroundColor: '#0A0',
+    height: 46,
+    width: 46,
+    borderRadius: 23,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

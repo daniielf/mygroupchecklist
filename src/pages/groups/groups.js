@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { SafeAreaView, View, Text, Modal,TouchableOpacity, ScrollView } from 'react-native';
-import DialogInput from 'react-native-dialog-input';
+import DialogBox from '../../component/DialogBox';
 import firestore from '@react-native-firebase/firestore';
 
 import styles from './styles';
@@ -10,7 +10,6 @@ import styles from './styles';
   const [joinGroupDialog, toggleJoinGroupDialog] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [userEmail, setUserEmail] = useState(navigation.getParam('email'));
-
 
   useEffect(() => {
     setGroupList([]);
@@ -34,7 +33,7 @@ import styles from './styles';
         let docRef = doc.data();
         docRef.users.push(userEmail);
         firestore().collection('groups').doc(groupID).update(docRef).then(() => {
-          refreshGroups();
+          // refreshGroups();
         }).catch((err) => {
           console.log('update failed');
         });
@@ -47,7 +46,7 @@ import styles from './styles';
 
   function refreshGroups() {
     let groups = [];
-      firestore().collection('groups').where('users', 'array-contains', String(userEmail))
+    firestore().collection('groups').where('users', 'array-contains', String(userEmail))
       .onSnapshot((snapshot) => {
         groups = [];
         snapshot.forEach((doc) => {
@@ -58,6 +57,10 @@ import styles from './styles';
         toggleNewGroupDialog(false);
         setGroupList(groups);
       });
+  }
+
+  function viewGroupTasks(group) {
+    navigation.navigate('Checklist', { group, userEmail });
   }
 
   return(
@@ -84,28 +87,28 @@ import styles from './styles';
           :
           <ScrollView style={styles.scrollListView}>
             { groupList.map((group, index) => { 
-                return (<TouchableOpacity onPress={() => navigation.navigate('Checklist', { group })} key={index} style={styles.groupListItem}>
+                return (<TouchableOpacity onPress={() => viewGroupTasks(group)} key={index} style={styles.groupListItem}>
                           <Text style={styles.groupItemText}>{group.name}</Text>
                         </TouchableOpacity>)
               }) 
             }
           </ScrollView>
         }
-        <DialogInput
+        <DialogBox
           isDialogVisible={newGroupDialog}
           closeDialog={()=>{toggleNewGroupDialog(false)}}
           submitInput={(inputText) => {insertNewGroup(inputText)} }
           hintInput={"Group name..."}
           title={"New Group"}>
-        </DialogInput>
+        </DialogBox>
 
-        <DialogInput
+        <DialogBox
           isDialogVisible={joinGroupDialog}
           closeDialog={()=>{toggleJoinGroupDialog(false)}}
           submitInput={(inputText) => {joinNewGroup(inputText)} }
           hintInput={"Group ID"}
           title={"Join Group"}>
-        </DialogInput>
+        </DialogBox>
       </SafeAreaView>
     </>
   )
